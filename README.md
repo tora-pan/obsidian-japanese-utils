@@ -1,4 +1,4 @@
-# Obsidian-Utils
+# Obsidian-Typing-Utils
 
 ## Reason for development
 The main goal for me developing this is to help content creators when working on coding tutorials or when there is a need to animate text being typed into the markdown editior.
