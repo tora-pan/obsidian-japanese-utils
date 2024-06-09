@@ -1,9 +1,9 @@
 {
-	"id": "japanese-utils-plugin",
-	"name": "Japanese Utils",
+	"id": "typing-utils-plugin",
+	"name": "Typing Utils",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Tools to help you learn Japanese in Obsidian.",
+	"description": "Tools to help you create animated content  in Obsidian.",
 	"author": "Travis Pandos",
 	"authorUrl": "https://travispandos.com",
 	"fundingUrl": "https://buymeacoffee.com/torapan",
