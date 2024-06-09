@@ -1,7 +1,7 @@
-import { get } from "http";
 import {
 	App,
 	Editor,
+	EditorPosition,
 	MarkdownView,
 	Modal,
 	Notice,
@@ -10,16 +10,18 @@ import {
 	Setting,
 } from "obsidian";
 
-interface MyPluginSettings {
+interface TypewriterSettings {
 	blockDelimiter: string;
 	typingSpeed: string;
 }
 
 export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+	settings: TypewriterSettings;
 
 	async onload() {
 		await this.loadSettings();
+
+		
 
 		// This creates an icon in the left ribbon.
 		const ribbonIconEl = this.addRibbonIcon(
@@ -84,11 +86,11 @@ export default class MyPlugin extends Plugin {
 			console.log(this.settings);
 		});
 
-		const insertLetter = (editor, letter, position) => {
+		const insertLetter = (editor: Editor, letter: string, position: EditorPosition) => {
 			editor.replaceRange(letter, position);
 		};
 
-		const insertBlockWithDelay = (editor, block, position, delay) => {
+		const insertBlockWithDelay = (editor:Editor, block:string, position:EditorPosition, delay:number) => {
 			block.split("").forEach((letter, j) => {
 				setTimeout(() => {
 					insertLetter(editor, letter, position);
@@ -97,26 +99,24 @@ export default class MyPlugin extends Plugin {
 			});
 		};
 
-		const getBlocks = (editor) => {
+		const getBlocks = (editor:Editor) => {
 			const allText = editor.getValue();
 			console.log("allText: ", allText);
+			editor.setValue('');
 			return allText.split(/\n\s*\n/).map((block) => block.trim() + "\n"); // Add '\n' back to preserve structure
 		};
+
 
 		this.addCommand({
 			id: "start-typewriter",
 			name: "Start Typewriter",
 			editorCallback: (editor) => {
 				const blocks = getBlocks(editor);
-				console.log("blocks: ", blocks);
 				let delay = 0;
 				let currentPos = editor.getCursor();
 
 				blocks.forEach((block, index) => {
 					insertBlockWithDelay(editor, block, currentPos, delay);
-					console.log("--------");
-					console.log(currentPos);
-					console.log("--------");
 					currentPos = editor.getCursor();
 					currentPos.line += block.split("\n").length; // Move the cursor to the end of the inserted block
 					currentPos.ch = 0; // Move cursor to the beginning of the next line
@@ -135,6 +135,31 @@ export default class MyPlugin extends Plugin {
 		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
 		// this.registerInterval(
 		// );
+
+	// 	this.registerMarkdownPostProcessor((element, context) => {
+	// 		// Find all text blocks wrapped in -=-
+	// 		element.querySelectorAll("p").forEach((p) => {
+	// 			const regex = /-=-([\s\S]*?)-=-/g;
+	// 			p.innerHTML = p.innerHTML.replace(regex, (match, p1) => {
+	// 				// Apply your custom processing here
+	// 				console.log('here')
+	// 				return `${p1}`;
+	// 			});
+	// 		});
+	// 		this.app.commands.executeCommandById("start-typewriter");
+	// 	});
+	// }
+	// addCustomStyles() {
+	// 	const style = document.createElement("style");
+	// 	style.textContent = `
+	// 		.custom-syntax {
+	// 			font-weight: bold;
+	// 			color: blue;
+	// 			}
+	// 			`;
+	// 	document.head.appendChild(style);
+
+	// 	this.addCustomStyles();
 	}
 
 	onunload() {}
