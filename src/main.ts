@@ -30,8 +30,9 @@ export default class MyPlugin extends Plugin {
 				const blocks = getBlocks(editor);
 				let delay = 0;
 				let currentPos = editor.getCursor();
-
+				
 				blocks.forEach((block, index) => {
+					delay = Math.floor(Math.random() * 1000) + 1000;
 					insertBlockWithDelay(editor, block, currentPos, delay);
 					currentPos = editor.getCursor();
 					currentPos.line += block.split("\n").length; // Move the cursor to the end of the inserted block
