@@ -1,9 +1,5 @@
-import {
-	App,
-	Plugin,
-	PluginSettingTab,
-	Setting,
-} from "obsidian";
+import { App, Plugin, PluginSettingTab, Setting } from "obsidian";
+// import { getBlocks, insertBlockWithDelay } from "./typewritter";
 import { getBlocks, insertBlockWithDelay } from "./typewritter";
 
 interface TypewriterSettings {
@@ -14,32 +10,57 @@ interface TypewriterSettings {
 export default class MyPlugin extends Plugin {
 	settings: TypewriterSettings;
 
+	registerStyles() {
+		const link = document.createElement("link");
+		link.rel = "stylesheet";
+		link.href = this.app.vault.adapter.getResourcePath(
+			this.getStylesheetPath()
+		);
+		document.head.appendChild(link);
+	}
+
+	getStylesheetPath() {
+		return "styles.css"; // Update this path to the actual location of your styles.css
+	}
+
 	async onload() {
 		await this.loadSettings();
 
 		this.addSettingTab(new TypingUtilsSettingsTab(this.app, this));
 
+		this.registerStyles();
+
 		this.registerDomEvent(document, "keypress", (evt: KeyboardEvent) => {
 			// console.log(evt);
 		});
-		
+
+		this.registerMarkdownPostProcessor((element, context) => {
+            // Use a regular expression to find the custom delimiter pattern
+            const pattern = /=h=(.*?)=h=/g;
+
+            // Replace the delimiter pattern with <span> tags with a class
+            element.innerHTML = element.innerHTML.replace(pattern, (match, p1) => {
+                return `<span class="custom-highlight">${p1}</span>`;
+            });
+        });
+
 		this.addCommand({
-    id: "start-typewriter",
-    name: "Start Typewriter",
-    editorCallback: async (editor) => {
-        const blocks = getBlocks(editor);
-        let currentPos = editor.getCursor();
-        for (let block of blocks) {
-            // const delay = Math.floor(Math.random() * 1000) + 1000;
-						block += "\n";
-            await insertBlockWithDelay(editor, block, currentPos);
-            currentPos = editor.getCursor();
-            currentPos.line += block.split("\n").length; // Move the cursor to the end of the inserted block
-            currentPos.ch = 0; // Move cursor to the beginning of the next line
-        }
-        editor.setCursor(currentPos);
-    },
-});
+			id: "start-typewriter",
+			name: "Start Typewriter",
+			editorCallback: async (editor) => {
+				const blocks = getBlocks(editor);
+				let currentPos = editor.getCursor();
+				for (let block of blocks) {
+					// const delay = Math.floor(Math.random() * 1000) + 1000;
+					block += "\n";
+					await insertBlockWithDelay(editor, block, currentPos);
+					currentPos = editor.getCursor();
+					currentPos.line += block.split("\n").length; // Move the cursor to the end of the inserted block
+					currentPos.ch = 0; // Move cursor to the beginning of the next line
+				}
+				editor.setCursor(currentPos);
+			},
+		});
 	}
 
 	onunload() {}
