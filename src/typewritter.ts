@@ -1,7 +1,7 @@
 import { Editor, EditorPosition } from "obsidian";
 
 // Helper function to insert a letter at a specific position
-export const insertLetter = (editor: Editor, letter: string, position: EditorPosition) => {
+export const insertLetter = async (editor: Editor, letter: string, position: EditorPosition) => {
     editor.replaceRange(letter, position);
     position.ch++; // Move the cursor to the right after each letter
     editor.setCursor(position);
@@ -22,7 +22,7 @@ export const insertBlockWithDelay = async (editor: Editor, block: string, positi
 // Function to get blocks of text from the editor
 export const getBlocks = (editor: Editor) => {
     const allText = editor.getValue();
-    console.log("allText: ", allText);
     editor.setValue("");
-    return allText.split(/\n\s*\n/).map((block) => block.trim() + "\n"); // Add '\n' back to preserve structure
+    const split = allText.split(/\n\s*\n/);
+    return split.map((block) => block + "\n");
 };

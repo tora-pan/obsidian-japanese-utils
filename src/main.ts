@@ -20,28 +20,26 @@ export default class MyPlugin extends Plugin {
 		this.addSettingTab(new TypingUtilsSettingsTab(this.app, this));
 
 		this.registerDomEvent(document, "keypress", (evt: KeyboardEvent) => {
-			console.log(evt);
+			// console.log(evt);
 		});
 		
 		this.addCommand({
-			id: "start-typewriter",
-			name: "Start Typewriter",
-			editorCallback: (editor) => {
-				const blocks = getBlocks(editor);
-				let delay = 0;
-				let currentPos = editor.getCursor();
-				
-				blocks.forEach((block, index) => {
-					delay = Math.floor(Math.random() * 1000) + 1000;
-					insertBlockWithDelay(editor, block, currentPos, delay);
-					currentPos = editor.getCursor();
-					currentPos.line += block.split("\n").length; // Move the cursor to the end of the inserted block
-					currentPos.ch = 0; // Move cursor to the beginning of the next line
-					delay += block.length * 100; // Increment the delay for each block
-				});
-				editor.setCursor(currentPos);
-			},
-		});
+    id: "start-typewriter",
+    name: "Start Typewriter",
+    editorCallback: async (editor) => {
+        const blocks = getBlocks(editor);
+        let currentPos = editor.getCursor();
+        for (let block of blocks) {
+            // const delay = Math.floor(Math.random() * 1000) + 1000;
+						block += "\n";
+            await insertBlockWithDelay(editor, block, currentPos);
+            currentPos = editor.getCursor();
+            currentPos.line += block.split("\n").length; // Move the cursor to the end of the inserted block
+            currentPos.ch = 0; // Move cursor to the beginning of the next line
+        }
+        editor.setCursor(currentPos);
+    },
+});
 	}
 
 	onunload() {}
