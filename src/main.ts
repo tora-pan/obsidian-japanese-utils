@@ -24,9 +24,9 @@ export default class MyPlugin extends Plugin {
 	}
 
 	async onload() {
-		await this.loadSettings();
+		// await this.loadSettings();
 
-		this.addSettingTab(new TypingUtilsSettingsTab(this.app, this));
+		// this.addSettingTab(new TypingUtilsSettingsTab(this.app, this));
 
 		this.registerStyles();
 
@@ -35,15 +35,19 @@ export default class MyPlugin extends Plugin {
 		});
 
 		this.registerMarkdownPostProcessor((element, context) => {
-            // Use a regular expression to find the custom delimiter pattern
-            const pattern = /=h=(.*?)=h=/g;
+			// Use a regular expression to find the custom delimiter pattern
+			const pattern = /=h=(.*?)=h=/g;
 
-            // Replace the delimiter pattern with <span> tags with a class
-            element.innerHTML = element.innerHTML.replace(pattern, (match, p1) => {
-                return `<span class="custom-highlight">${p1}</span>`;
-            });
-        });
+			// Replace the delimiter pattern with <span> tags with a class
+			element.innerHTML = element.innerHTML.replace(
+				pattern,
+				(match, p1) => {
+					return `<span class="hidden-content">${p1}</span>`;
+				}
+			);
+		});
 
+		// Command to start the typewriter effect
 		this.addCommand({
 			id: "start-typewriter",
 			name: "Start Typewriter",
@@ -51,7 +55,6 @@ export default class MyPlugin extends Plugin {
 				const blocks = getBlocks(editor);
 				let currentPos = editor.getCursor();
 				for (let block of blocks) {
-					// const delay = Math.floor(Math.random() * 1000) + 1000;
 					block += "\n";
 					await insertBlockWithDelay(editor, block, currentPos);
 					currentPos = editor.getCursor();
@@ -69,9 +72,9 @@ export default class MyPlugin extends Plugin {
 		this.settings = Object.assign({}, await this.loadData());
 	}
 
-	async saveSettings() {
-		await this.saveData(this.settings);
-	}
+	// async saveSettings() {
+	// 	await this.saveData(this.settings);
+	// }
 }
 
 class TypingUtilsSettingsTab extends PluginSettingTab {
