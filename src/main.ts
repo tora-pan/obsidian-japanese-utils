@@ -72,9 +72,9 @@ export default class MyPlugin extends Plugin {
 		this.settings = Object.assign({}, await this.loadData());
 	}
 
-	// async saveSettings() {
-	// 	await this.saveData(this.settings);
-	// }
+	async saveSettings() {
+		await this.saveData(this.settings);
+	}
 }
 
 class TypingUtilsSettingsTab extends PluginSettingTab {
